@@ -1,13 +1,38 @@
 version: "3"
-services:
-  jenkins:
-    container_name: jenkins
-    image: jenkins/jenkins
+services:  
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
     ports:
-      - "8080:8080"
+     - "8080:15672"
+     - "5672:5672"
+     - "25676:25676"
+    networks:
+      - back-tier
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: "Postgres2019!"
+    ports:
+      - "15432:5432"
     volumes:
-      - "./jenkins:/var/jenkins_home"
-    
+      - ./data:/var/lib/postgresql/data 
+    networks:
+      - back-tier
+      
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "vrezende@ext.vectoritcgroup.com"
+      PGADMIN_DEFAULT_PASSWORD: "PgAdmin2019!"
+    ports:
+      - "8081:80"
+    depends_on:
+      - postgres
+    networks:
+      - back-tier
+  
   jupyter:
     image: jupyter/scipy-notebook
     ports:
@@ -16,6 +41,6 @@ services:
       - .:/home/jovyan
 
 networks:
-  default:
+  back-tier:
     external:
-      name: net
+      name: back-tier

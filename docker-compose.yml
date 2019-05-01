@@ -39,6 +39,8 @@ services:
       - 8888:8888
     volumes:
       - .:/home/jovyan
+    networks:
+      - back-tier
 
 networks:
   back-tier:

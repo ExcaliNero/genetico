@@ -10,6 +10,14 @@ services:
     networks:
       - back-tier
 
+  metabase:
+    image: metabase/metabase
+    hostname: metabase
+    ports:
+      - "3000:3000"
+    networks:
+      - back-tier
+
   postgres:
     image: postgres
     environment:
